@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -e
+
+print_menu() {
+    printf "\n\033[1;32mTODAY'S MESS MENU\n------- ---- ----\033[0m\n"
+    printf "Breakfast\n"
+}
+
+
+if [ "$(id -u)" -eq 0 ]; then
+    # root user
+    printf "plz don't run me as root xD\n"
+    exit 1
+else
+    # create ~/.config/iiitd_menucat
+    if [ ! -d "$HOME/.config/iiitd_menucat" ]; then 
+        printf "~/.config/iiitd_menucat does not exist, creating...\n"
+        mkdir -p ~/.config/iiitd_menucat
+    fi
+
+    # create menu file
+    if [ ! -f "$HOME/.config/iiitd_menucat/monthmenu" ]; then
+        printf "Creating menu file for this month...\n"
+        touch ~/.config/iiitd_menucat/monthmenu
+    fi
+
+    # create "time of last execution" file 
+    if [ ! -f "$HOME/.config/iiitd_menucat/lastrun" ]; then
+        date +%m%Y > ~/.config/iiitd_menucat/lastrun
+    fi
+
+
+    if [ "$(cat ~/.config/iiitd_menucat/lastrun)" -eq "$(date +%m%Y)" ]; then
+        # print the menu
+        print_menu
+    else
+        printf "\033[0;32mNew month, new menu! Updating :D\033[0m\n"
+        date +%m%Y > ~/.config/iiitd_menucat/lastrun
+        # update the menu
+        print_menu
+    fi
+fi
